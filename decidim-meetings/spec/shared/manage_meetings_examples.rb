@@ -35,34 +35,34 @@ shared_examples "manage meetings" do
         within "#meeting-title-tabs" do
           click_link "English"
         end
-        expect(page).to have_css("input", text: meeting.title[:en], visible: true)
+        expect(page).to have_css("input", text: meeting.title[:en], visible: :visible)
 
         within "#meeting-title-tabs" do
           click_link "Català"
         end
-        expect(page).to have_css("input", text: meeting.title[:ca], visible: true)
+        expect(page).to have_css("input", text: meeting.title[:ca], visible: :visible)
 
         within "#meeting-title-tabs" do
           click_link "Castellano"
         end
-        expect(page).to have_css("input", text: meeting.title[:es], visible: true)
+        expect(page).to have_css("input", text: meeting.title[:es], visible: :visible)
       end
 
       it "shows the description correctly in all available locales" do
         within "#meeting-description-tabs" do
           click_link "English"
         end
-        expect(page).to have_css("input", text: meeting.description[:en], visible: true)
+        expect(page).to have_css("input", text: meeting.description[:en], visible: :visible)
 
         within "#meeting-description-tabs" do
           click_link "Català"
         end
-        expect(page).to have_css("input", text: meeting.description[:ca], visible: true)
+        expect(page).to have_css("input", text: meeting.description[:ca], visible: :visible)
 
         within "#meeting-description-tabs" do
           click_link "Castellano"
         end
-        expect(page).to have_css("input", text: meeting.description[:es], visible: true)
+        expect(page).to have_css("input", text: meeting.description[:es], visible: :visible)
       end
     end
 
@@ -76,12 +76,12 @@ shared_examples "manage meetings" do
 
       it "shows the title correctly" do
         expect(page).not_to have_css("#meeting-title-tabs")
-        expect(page).to have_css("input", text: meeting.title[:en], visible: true)
+        expect(page).to have_css("input", text: meeting.title[:en], visible: :visible)
       end
 
       it "shows the description correctly" do
         expect(page).not_to have_css("#meeting-description-tabs")
-        expect(page).to have_css("input", text: meeting.description[:en], visible: true)
+        expect(page).to have_css("input", text: meeting.description[:en], visible: :visible)
       end
     end
   end
@@ -378,7 +378,7 @@ shared_examples "manage meetings" do
     let(:proposal_component) do
       create(:component, manifest_name: :proposals, participatory_space: meeting.component.participatory_space)
     end
-    let!(:proposals) { create_list(:proposal, 3, component: proposal_component) }
+    let!(:proposals) { create_list(:proposal, 3, component: proposal_component, skip_injection: true) }
 
     it "closes a meeting with a report" do
       within find("tr", text: Decidim::Meetings::MeetingPresenter.new(meeting).title) do
@@ -432,7 +432,7 @@ shared_examples "manage meetings" do
 
     page.all(".meeting-service").each_with_index do |meeting_service, index|
       within meeting_service do
-        fill_in current_scope.find("[id$=title_en]", visible: true)["id"], with: service_titles[index]
+        fill_in current_scope.find("[id$=title_en]", visible: :visible)["id"], with: service_titles[index]
       end
     end
   end

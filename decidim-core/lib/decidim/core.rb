@@ -8,6 +8,7 @@ module Decidim
   autoload :Deprecations, "decidim/deprecations"
   autoload :ActsAsAuthor, "decidim/acts_as_author"
   autoload :TranslatableAttributes, "decidim/translatable_attributes"
+  autoload :TranslatableResource, "decidim/translatable_resource"
   autoload :JsonbAttributes, "decidim/jsonb_attributes"
   autoload :FormBuilder, "decidim/form_builder"
   autoload :AuthorizationFormBuilder, "decidim/authorization_form_builder"
@@ -140,7 +141,7 @@ module Decidim
 
   # Exposes a configuration option: The application available locales.
   config_accessor :available_locales do
-    %w(en ar ca de el es es-MX es-PY eu fi-pl fi fr gl hu id it nl no pl pt pt-BR ro ru sk sv tr uk)
+    %w(en bg ar ca cs da de el eo es es-MX es-PY et eu fi-pl fi fr fr-CA ga gl hr hu id is it ja lt lv mt nl no pl pt pt-BR ro ru sk sl sr sv tr uk)
   end
 
   # Exposes a configuration option: The application default locale.
@@ -259,6 +260,11 @@ module Decidim
     2.days
   end
 
+  # Allow machine translations
+  config_accessor :enable_machine_translations do
+    false
+  end
+
   # How long can a user remained logged in before the session expires
   config_accessor :expire_session_after do
     1.day
@@ -303,6 +309,12 @@ module Decidim
     # "MyPDFSignatureService"
   end
 
+  # The name of the class to translate user content.
+  #
+  config_accessor :machine_translation_service do
+    # "MyTranslationService"
+  end
+
   # The Decidim::Exporters::CSV's default column separator
   config_accessor :default_csv_col_sep do
     ";"
@@ -329,6 +341,12 @@ module Decidim
   # step setting :amendments_visibility.
   config_accessor :amendments_visibility_options do
     %w(all participants)
+  end
+
+  # Defines the name of the cookie used to check if the user allows Decidim to
+  # set cookies.
+  config_accessor :consent_cookie_name do
+    "decidim-cc"
   end
 
   # Public: Registers a global engine. This method is intended to be used
@@ -514,5 +532,11 @@ module Decidim
   # Public: Stores an instance of MetricOperation
   def self.metrics_operation
     @metrics_operation ||= MetricOperation.new
+  end
+
+  def self.machine_translation_service_klass
+    return unless Decidim.enable_machine_translations
+
+    Decidim.machine_translation_service.to_s.safe_constantize
   end
 end

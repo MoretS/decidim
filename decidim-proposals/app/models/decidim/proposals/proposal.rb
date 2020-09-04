@@ -26,8 +26,10 @@ module Decidim
       include Decidim::Randomable
       include Decidim::Endorsable
       include Decidim::Proposals::Valuatable
-
+      include Decidim::TranslatableResource
       include Decidim::TranslatableAttributes
+
+      translatable_fields :title, :body
 
       POSSIBLE_STATES = %w(not_answered evaluating accepted rejected withdrawn).freeze
 
@@ -412,14 +414,6 @@ module Decidim
             state_published_at: Time.current
           )
         end
-      end
-
-      def i18n_title
-        translated_attribute(title)
-      end
-
-      def i18n_body
-        translated_attribute(body)
       end
 
       private
